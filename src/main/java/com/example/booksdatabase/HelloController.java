@@ -2,15 +2,11 @@ package com.example.booksdatabase;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -23,6 +19,11 @@ import javafx.util.converter.IntegerStringConverter;
 
 import java.util.HashMap;
 import java.util.HashSet;
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class HelloController {
     @FXML
@@ -70,6 +71,28 @@ public class HelloController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    @FXML
+    protected void onSaveToDBButtonClick () {
+        PreparedStatement st = null;
+        System.out.println("onSaveToDBButtonClick");
+        for (int key : isbnMap.keySet()) {
+            Book b = isbnMap.get(key);
+            try {
+                st = connectToDB().prepareStatement("UPDATE book SET title = ?, year = ? WHERE isbn = ?");
+                st.setString(1, b.getTitle());
+                st.setInt(2, b.getYear());
+                st.setInt(3, b.getIsbn());
+                st.executeUpdate();
+                st.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        onConnectToDBButtonClick ();
     }
 
 
@@ -139,7 +162,7 @@ public class HelloController {
 
         TableView.TableViewSelectionModel<Book> selectionModel = booksTableView.getSelectionModel();
         selectionModel.selectedItemProperty().addListener((observableValue, oldVal, newVal) -> {
-            if(observableValue != null) {
+            if(observableValue.getValue() != null) {
                 System.out.println("observableValue: "+observableValue.getValue().toString());
             }
 

@@ -15,7 +15,8 @@
             <TableColumn prefWidth="75.0" text="year" />
         </columns>
       </TableView>
-      <Button fx:id="saveToFileButton" layoutX="500.0" layoutY="49.0" mnemonicParsing="false" onAction="#onSaveButtonClick" prefHeight="25.0" prefWidth="126.0" text="Save" />
+      <Button fx:id="saveToFileButton" layoutX="500.0" layoutY="49.0" mnemonicParsing="false" onAction="#onSaveButtonClick" prefHeight="25.0" prefWidth="126.0" text="Save to file" />
       <Button fx:id="connectToDBButton" layoutX="500.0" layoutY="14.0" mnemonicParsing="false" onAction="#onConnectToDBButtonClick" prefHeight="25.0" prefWidth="126.0" text="Open" />
+      <Button fx:id="saveToDBButton" layoutX="500.0" layoutY="82.0" mnemonicParsing="false" onAction="#onSaveToDBButtonClick" prefHeight="25.0" prefWidth="126.0" text="Save to DB" />
    </children>
 </AnchorPane>
