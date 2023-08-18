@@ -2,6 +2,8 @@ package com.example.booksdatabase;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class HelloController {
@@ -33,11 +36,19 @@ public class HelloController {
 
     ObservableList<Book> observableBooks = FXCollections.observableArrayList();
 
+    private HashMap<Integer,Book> isbnMap = new HashMap<>();
+
 
 
     @FXML
     protected void onHelloButtonClick () {
         welcomeText.setText("Welcome to JavaFX Application!");
+    }
+
+    @FXML
+    protected void onSaveButtonClick () {
+
+        System.out.println(isbnMap.toString());
     }
 
 
@@ -74,11 +85,19 @@ public class HelloController {
         initTable();
     }
 
+    public void startChangeTracking() {
+        for(Book b:observableBooks) {
+            b.titleProperty().addListener((val,o,n) -> isbnMap.put(b.getIsbn(),b));
+            b.yearProperty().addListener((val,o,n) -> isbnMap.put(b.getIsbn(),b));
+        }
+    }
+
     public void initTable() {
         booksTableView.getColumns().clear();
         TableColumn<Book, Integer> columnISBN = new TableColumn<>("isbn");
         columnISBN.setCellValueFactory(new PropertyValueFactory<>("isbn"));
         columnISBN.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        columnISBN.setEditable(false);
 
         TableColumn<Book, String> columnTitle = new TableColumn<>("title");
         columnTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -96,6 +115,19 @@ public class HelloController {
         booksTableView.setItems(observableBooks);
         booksTableView.setEditable(true);
 
+
+        TableView.TableViewSelectionModel<Book> selectionModel = booksTableView.getSelectionModel();
+        selectionModel.selectedItemProperty().addListener((observableValue, oldVal, newVal) -> {
+            if(observableValue != null) {
+                System.out.println("observableValue: "+observableValue.getValue().toString());
+            }
+
+
+            if(oldVal != null) System.out.println("oldVal: "+oldVal.toString());
+            if(newVal != null) System.out.println("newVal: "+newVal.toString());
+        });
+
+
     }
 
     private static Connection connectToDB() {
@@ -108,6 +140,11 @@ public class HelloController {
             System.out.println("не удалось подключиться к базе. "+e.getMessage());
             return null;
         }
+    }
+
+    public void initialize(){
+        startChangeTracking();
+
     }
 
 
