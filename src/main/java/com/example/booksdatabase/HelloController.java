@@ -11,6 +11,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -47,8 +51,25 @@ public class HelloController {
 
     @FXML
     protected void onSaveButtonClick () {
-
         System.out.println(isbnMap.toString());
+        StringBuilder sb=new StringBuilder();
+
+        for (int key : isbnMap.keySet()) {
+            sb.append(key +"\n");
+        }
+
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter("OUTPUT.TXT"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -127,7 +148,7 @@ public class HelloController {
             if(newVal != null) System.out.println("newVal: "+newVal.toString());
         });
 
-
+        startChangeTracking();
     }
 
     private static Connection connectToDB() {
@@ -143,7 +164,7 @@ public class HelloController {
     }
 
     public void initialize(){
-        startChangeTracking();
+        ;
 
     }
 
