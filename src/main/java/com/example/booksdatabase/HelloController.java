@@ -4,7 +4,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,9 +14,7 @@ import java.sql.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.IntegerStringConverter;
-import model.Book;
 
-import java.util.Arrays;
 import java.util.HashSet;
 
 public class HelloController {
@@ -65,7 +62,8 @@ public class HelloController {
                 SimpleIntegerProperty year = new SimpleIntegerProperty();
                 year.set(Integer.parseInt(rs.getString(3)));
 
-                books.add(new Book(isbn,title,year));
+                //books.add(new Book(Integer.parseInt(rs.getString(1),rs.getString(2),Integer.parseInt(rs.getString(3)));
+                books.add(new Book(rs.getInt("isbn"),rs.getString("title"),rs.getInt("year")));
             }
             rs.close();
             st.close();
@@ -84,7 +82,7 @@ public class HelloController {
 
         TableColumn<Book, String> columnTitle = new TableColumn<>("title");
         columnTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-
+        columnTitle.setCellFactory(TextFieldTableCell.forTableColumn());
         TableColumn<Book, Integer> columnYear = new TableColumn<>("year");
         columnYear.setCellValueFactory(new PropertyValueFactory<>("year"));
         columnYear.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
